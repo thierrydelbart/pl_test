@@ -39,19 +39,17 @@ const InvoiceCreate = () => {
   return (
     <div>
       <h1>New invoice</h1>
-      <a className="button" href="/">Back</a>
-      <div className="mb-3 mt-3">
-        <div className="mb-3">
-          <label className="form-label">Customer</label>
-          <CustomerAutocomplete value={customer} onChange={setCustomer} />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Due date</label>
-          <br />
-          <DatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
-        </div>
+      <a className="btn btn-outline-dark mb-3" href="/">Back</a>
+      <div className="mb-3">
+        <label className="form-label">Customer</label>
+        <CustomerAutocomplete value={customer} onChange={setCustomer} />
       </div>
-      <button onClick={handleCreate}>Create</button>
+      <div className="mb-3">
+        <label className="form-label">Due date</label>
+        <br />
+        <DatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
+      </div>
+      <button onClick={handleCreate} className="btn btn-outline-primary">Create</button>
     </div>
   )
 }

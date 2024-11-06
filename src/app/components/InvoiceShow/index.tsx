@@ -17,6 +17,8 @@ const InvoiceShow = () => {
 
   return (
     <div>
+      <h1>Invoice {invoice?.id} </h1>
+      <a className="btn btn-outline-dark mb-3" href="/">Back</a>
       <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
     </div>
   )
