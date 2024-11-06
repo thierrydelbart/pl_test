@@ -239,11 +239,6 @@ declare namespace Components {
     export interface InvoiceUpdatePayload {
       /**
        * example:
-       * 6757
-       */
-      id: number;
-      /**
-       * example:
        * 6773
        */
       customer_id?: number;

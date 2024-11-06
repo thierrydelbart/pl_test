@@ -1,13 +1,12 @@
 import { useApi } from 'api'
 import { Invoice, Customer, Product } from 'types'
 import { useEffect, useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import CustomerAutocomplete from '../CustomerAutocomplete'
 import ProductAutocomplete from '../ProductAutocomplete'
+import { Components } from 'api/gen/client'
 
 const InvoicesList = (): React.ReactElement => {
   const api = useApi()
-  const navigate = useNavigate()
 
   const [invoicesList, setInvoicesList] = useState<Invoice[]>([])
   const [customer, setCustomer] = useState<Customer | null>(null)
@@ -22,10 +21,24 @@ const InvoicesList = (): React.ReactElement => {
     fetchInvoices()
   }, [fetchInvoices])
 
-  function handleRowClick(id: number): void {
-    navigate(`/invoice/${id}`)
+  const handleUpdate = async (invoice_id: number, invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload) => {
+    try {
+      console.log('Updating invoice...', invoiceUpdatePayload);
+      api.putInvoice({ id: invoice_id }, { invoice: { finalized: invoiceUpdatePayload.finalized } }).then(({ data }) => {
+        fetchInvoices()
+      });
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  };
+  
+  function finalize(invoice_id: number): void {
+    handleUpdate(invoice_id, { finalized: true })
   }
 
+  function setPaid(invoice_id: number, value: boolean): void {
+    handleUpdate(invoice_id, { paid: value })
+  }
   return (
     <div>
       <h1>Invoices</h1>
@@ -46,12 +59,13 @@ const InvoicesList = (): React.ReactElement => {
             <th>Paid</th>
             <th>Date</th>
             <th>Deadline</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {invoicesList.map((invoice) => (
-            <tr key={invoice.id} onClick={() => handleRowClick(invoice.id)} style={{ cursor: 'pointer' }}>
-              <td>{invoice.id}</td>
+          {invoicesList.map((invoice: Invoice) => (
+            <tr key={invoice.id}>
+              <td><a href={`/invoice/${invoice.id}`}>{invoice.id}</a></td>
               <td>
                 {invoice.customer?.first_name} {invoice.customer?.last_name}
               </td>
@@ -60,6 +74,16 @@ const InvoicesList = (): React.ReactElement => {
               <td>{invoice.paid ? 'Yes' : 'No'}</td>
               <td>{invoice.date}</td>
               <td>{invoice.deadline}</td>
+              <td>
+                { !invoice.finalized  && (
+                    <a className="btn btn-outline-primary mx-2" onClick={() => finalize(invoice.id)}>
+                      Finalize
+                    </a>
+                )}
+                <a className="btn btn-outline-primary mx-2" onClick={() => setPaid(invoice.id,!invoice.paid)}>
+                  {invoice.paid ? 'Unset' : 'Set'} paid
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
