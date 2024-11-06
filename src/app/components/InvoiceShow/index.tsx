@@ -15,11 +15,23 @@ const InvoiceShow = () => {
     })
   }, [api, id])
 
+  function handleDelete(): void {
+    invoice &&
+    window.confirm('Are you sure you want to delete this invoice?') &&
+    api.deleteInvoice({ id: invoice.id }).then(() => {
+      alert(`Invoice ${invoice?.id} deleted successfully!`)
+      window.location.href = '/'
+    })
+  }
+
   return (
     <div>
       <h1>Invoice {invoice?.id} </h1>
       <a className="btn btn-outline-dark mb-3" href="/">Back</a>
       <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
+      { invoice && (
+        <a className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</a>
+      )}
     </div>
   )
 }
