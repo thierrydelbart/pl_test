@@ -1,5 +1,5 @@
 import { useApi } from 'api'
-import { Invoice, Customer, Product } from 'types'
+import { Invoice } from 'types'
 import { useEffect, useCallback, useState } from 'react'
 import CustomerAutocomplete from '../CustomerAutocomplete'
 import ProductAutocomplete from '../ProductAutocomplete'
@@ -9,8 +9,6 @@ const InvoicesList = (): React.ReactElement => {
   const api = useApi()
 
   const [invoicesList, setInvoicesList] = useState<Invoice[]>([])
-  const [customer, setCustomer] = useState<Customer | null>(null)
-  const [product, setProduct] = useState<Product | null>(null)
 
   const fetchInvoices = useCallback(async () => {
     const { data } = await api.getInvoices()
@@ -42,12 +40,6 @@ const InvoicesList = (): React.ReactElement => {
   return (
     <div>
       <h1>Invoices</h1>
-      <div className="mb-3 mt-5">
-        <CustomerAutocomplete value={customer} onChange={setCustomer} />
-      </div>
-      <div className="mb-5">
-        <ProductAutocomplete value={product} onChange={setProduct} />
-      </div>
       <a className="btn btn-outline-dark mb-3" href="/invoices/new">New invoice</a>
       <table className="table table-bordered table-striped table-hover">
         <thead>
