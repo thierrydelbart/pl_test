@@ -21,6 +21,8 @@ const InvoiceShow = () => {
     api.deleteInvoice({ id: invoice.id }).then(() => {
       alert(`Invoice ${invoice?.id} deleted successfully!`)
       window.location.href = '/'
+    }).catch((error) => {
+      window.alert("Error deleting invoice\n" + error.response.data.message)
     })
   }
 

@@ -1,8 +1,6 @@
 import { useApi } from 'api'
 import { Invoice } from 'types'
 import { useEffect, useCallback, useState } from 'react'
-import CustomerAutocomplete from '../CustomerAutocomplete'
-import ProductAutocomplete from '../ProductAutocomplete'
 import { Components } from 'api/gen/client'
 
 const InvoicesList = (): React.ReactElement => {
@@ -20,14 +18,12 @@ const InvoicesList = (): React.ReactElement => {
   }, [fetchInvoices])
 
   const handleUpdate = async (invoice_id: number, invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload) => {
-    try {
-      console.log('Updating invoice...', invoiceUpdatePayload);
-      api.putInvoice({ id: invoice_id }, { invoice: { finalized: invoiceUpdatePayload.finalized } }).then(({ data }) => {
-        fetchInvoices()
-      });
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
+//    console.log('Updating invoice...', invoiceUpdatePayload);
+    api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(({ data }) => {
+      fetchInvoices()
+    }).catch((error) => {
+      window.alert("Error deleting invoice\n" + error?.response?.data?.message)
+    })
   };
   
   function finalize(invoice_id: number): void {

@@ -13,23 +13,21 @@ const InvoiceCreate = () => {
   const [deadline, setDeadline] = useState<Date | null>(new Date());
 
   const handleCreate = async () => {
-    try {
-      if (!customer) return;
+    if (!customer) return;
 
-      let invoice:Components.Schemas.InvoiceCreatePayload = { 
-        customer_id: customer.id,
-        deadline: deadline?.toISOString(),
-        date: new Date().toISOString(),
-      }; 
+    let invoice:Components.Schemas.InvoiceCreatePayload = { 
+      customer_id: customer.id,
+      deadline: deadline?.toISOString(),
+      date: new Date().toISOString(),
+    }; 
 
-      console.log('Creating invoice...');
-      api.postInvoices(null, { invoice: invoice }).then(({ data }) => {
-        alert(`Invoice ${data.id} created successfully!`);
-        window.location.href = '/'
-      });
-    } catch (error) {
-      console.error('Error creating data:', error);
-    }
+    console.log('Creating invoice...');
+    api.postInvoices(null, { invoice: invoice }).then(({ data }) => {
+      alert(`Invoice ${data.id} created successfully!`);
+      window.location.href = '/'
+    }).catch((error) => {
+      window.alert("Error creating invoice\n" + error?.response?.data?.message)
+    })
   };
   
   return (
