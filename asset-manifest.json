@@ -1,12 +1,11 @@
 {
   "files": {
     "main.css": "/pl_test/static/css/main.e9111e4f.css",
-    "main.js": "/pl_test/static/js/main.b7967a37.js",
-    "static/media/axios.cjs": "/pl_test/static/media/axios.0fd5060ee28a257d32a2.cjs",
+    "main.js": "/pl_test/static/js/main.16229d1e.js",
     "index.html": "/pl_test/index.html"
   },
   "entrypoints": [
     "static/css/main.e9111e4f.css",
-    "static/js/main.b7967a37.js"
+    "static/js/main.16229d1e.js"
   ]
 }
