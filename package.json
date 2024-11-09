@@ -1,11 +1,14 @@
 {
-  "name": "jean_test_front",
+  "name": "pl_test",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://thierrydelbart.github.io/pl_test",
   "scripts": {
     "start": "HOST=localhost react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
     "eject_ts": "./bin/eject_ts",
     "openapi:gen": "yarn -s typegen src/api/schema.yml > src/api/gen/client.d.ts && yarn openapi:convert",
@@ -70,6 +73,7 @@
     "@types/react-dom": "18.2.7",
     "@types/react-router-dom": "5.3.3",
     "@types/react-table": "7.7.14",
+    "gh-pages": "^6.2.0",
     "openapi-client-axios-typegen": "7.3.1",
     "prettier": "3.0.0",
     "react-scripts": "5.0.1",
