@@ -7,7 +7,7 @@ import InvoiceCreate from './components/InvoiceCreate'
 function App() {
   return (
     <div className="px-5">
-      <Router>
+      <Router basename={ process.env.BASENAME || undefined }>
         <Routes>
           <Route path="/invoices/new" Component={InvoiceCreate} />
           <Route path="/invoice/:id" Component={InvoiceShow} />
