@@ -5,9 +5,10 @@ import InvoiceShow from './components/InvoiceShow'
 import InvoiceCreate from './components/InvoiceCreate'
 
 function App() {
+  console.log(process.env.BASENAME)
   return (
     <div className="px-5">
-      <Router basename={ process.env.BASENAME || undefined }>
+      <Router basename="pl_test">
         <Routes>
           <Route path="/invoices/new" Component={InvoiceCreate} />
           <Route path="/invoice/:id" Component={InvoiceShow} />
