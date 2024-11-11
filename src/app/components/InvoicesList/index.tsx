@@ -2,6 +2,7 @@ import { useApi } from 'api'
 import { Invoice } from 'types'
 import { useEffect, useCallback, useState } from 'react'
 import { Components } from 'api/gen/client'
+import { Link } from 'react-router-dom'
 
 const InvoicesList = (): React.ReactElement => {
   const api = useApi()
@@ -36,7 +37,7 @@ const InvoicesList = (): React.ReactElement => {
   return (
     <div>
       <h1>Invoices</h1>
-      <a className="btn btn-outline-dark mb-3" href="/invoices/new">New invoice</a>
+      <Link className="btn btn-outline-dark mb-3" to="/invoices/new">New invoice</Link>
       <table className="table table-bordered table-striped table-hover">
         <thead>
           <tr>
@@ -53,7 +54,9 @@ const InvoicesList = (): React.ReactElement => {
         <tbody>
           {invoicesList.map((invoice: Invoice) => (
             <tr key={invoice.id}>
-              <td><a href={`/invoice/${invoice.id}`}>{invoice.id}</a></td>
+              <td>
+                <Link to={`/invoice/${invoice.id}`}>{invoice.id}</Link>
+              </td>
               <td>
                 {invoice.customer?.first_name} {invoice.customer?.last_name}
               </td>

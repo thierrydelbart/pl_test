@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import CustomerAutocomplete from '../CustomerAutocomplete'
 
 import "react-datepicker/dist/react-datepicker.css";
+import { Link, useNavigate } from 'react-router-dom';
 
 interface InvoiceCreateProps {
   customer?: Customer | null,
@@ -15,6 +16,7 @@ interface InvoiceCreateProps {
 
 const InvoiceCreate = () => {
   const api = useApi()
+  const navigate = useNavigate();
   const [ formData, setFormData ] = useState<InvoiceCreateProps>({
     date: new Date(),
     deadline: new Date(),
@@ -56,7 +58,7 @@ const InvoiceCreate = () => {
 
     api.postInvoices(null, { invoice: invoiceCreatePayload }).then(({ data }) => {
       window.alert(`Invoice ${data.id} created successfully!`);
-      window.location.href = '/'
+      navigate('/')
     }).catch((error) => {
       window.alert("Error creating invoice\n" + error?.response?.data?.message)
     }) 
@@ -65,7 +67,7 @@ const InvoiceCreate = () => {
   return (
     <div>
       <h1>New invoice</h1>
-      <a className="btn btn-outline-dark mb-3" href="/">Back</a>
+      <Link className="btn btn-outline-dark mb-3" to="/">Back</Link>
       <form onSubmit={handleCreate}>
         <div className="mb-3">
           <label className="form-label">Customer</label>
