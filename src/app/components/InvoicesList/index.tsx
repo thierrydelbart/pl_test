@@ -23,7 +23,7 @@ const InvoicesList = (): React.ReactElement => {
     api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(({ data }) => {
       fetchInvoices()
     }).catch((error) => {
-      window.alert("Error deleting invoice\n" + error?.response?.data?.message)
+      window.alert("Error updating invoice\n" + error?.response?.data?.message)
     })
   };
   
