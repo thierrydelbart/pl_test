@@ -4,6 +4,7 @@ import { useParams } from 'react-router'
 import { useApi } from 'api'
 import { Invoice } from 'types'
 import { Link, useNavigate } from 'react-router-dom'
+import UpdateInvoiceForm from './updateInvoiceForm'
 
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
@@ -33,9 +34,11 @@ const InvoiceShow = () => {
     <div>
       <h1>Invoice {invoice?.id} </h1>
       <Link className="btn btn-outline-dark mb-3" to="/">Back</Link>
-      <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
       { invoice && (
-        <button className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</button>
+        <>
+          <UpdateInvoiceForm invoice={ invoice } />
+          <button className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</button>
+        </>
       )}
     </div>
   )
