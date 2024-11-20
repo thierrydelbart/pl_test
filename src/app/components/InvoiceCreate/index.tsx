@@ -73,7 +73,7 @@ const InvoiceCreate = () => {
           <label className="form-label">Customer</label>
           <CustomerAutocomplete 
             value={formData?.customer || null} 
-            onChange={(customer) => setFormData({ ... formData, customer: customer})} 
+            onChange={(customer) => setFormData({ ...formData, customer: customer})} 
           />
         </div>
         { formData?.customer && (
@@ -83,7 +83,7 @@ const InvoiceCreate = () => {
               <br />
               <DatePicker 
                 selected={formData?.date}
-                onChange={(date) => setFormData({ ... formData, date: date})}
+                onChange={(date) => setFormData({ ...formData, date: date})}
               />
             </div>
             <div className="mb-3">
@@ -91,7 +91,7 @@ const InvoiceCreate = () => {
               <br />
               <DatePicker 
                 selected={formData?.deadline}
-                onChange={(date) => setFormData({ ... formData, deadline: date})}
+                onChange={(date) => setFormData({ ...formData, deadline: date})}
               />
             </div>
           </div>

@@ -35,7 +35,7 @@ const InvoiceShow = () => {
       <Link className="btn btn-outline-dark mb-3" to="/">Back</Link>
       <pre>{JSON.stringify(invoice ?? '', null, 2)}</pre>
       { invoice && (
-        <a className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</a>
+        <button className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</button>
       )}
     </div>
   )

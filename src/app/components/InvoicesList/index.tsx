@@ -67,13 +67,13 @@ const InvoicesList = (): React.ReactElement => {
               <td>{invoice.deadline}</td>
               <td>
                 { !invoice.finalized  && (
-                    <a className="btn btn-outline-primary mx-2" onClick={() => finalize(invoice.id)}>
+                    <button className="btn btn-outline-primary mx-2" onClick={() => finalize(invoice.id)}>
                       Finalize
-                    </a>
+                    </button>
                 )}
-                <a className="btn btn-outline-primary mx-2" onClick={() => setPaid(invoice.id,!invoice.paid)}>
+                <button className="btn btn-outline-primary mx-2" onClick={() => setPaid(invoice.id,!invoice.paid)}>
                   {invoice.paid ? 'Unset' : 'Set'} paid
-                </a>
+                </button>
               </td>
             </tr>
           ))}
