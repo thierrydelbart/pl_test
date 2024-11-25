@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 
 import { useApi } from 'api'
-import { Customer, Invoice } from 'types'
+import { Invoice } from 'types'
 import { useNavigate } from 'react-router-dom'
 import UpdateInvoiceForm from './updateInvoiceForm'
 import { Components } from 'api/gen/client'
