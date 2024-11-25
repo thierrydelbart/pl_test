@@ -32,7 +32,6 @@ const InvoiceShow = () => {
     invoice &&
     window.confirm('Are you sure you want to delete this invoice?') &&
     api.deleteInvoice({ id: invoice.id }).then(() => {
-      alert(`Invoice ${invoice?.id} deleted successfully!`)
       navigate('/')
     }).catch((error) => {
       window.alert("Error deleting invoice\n" + error.response.data.message)
@@ -67,7 +66,6 @@ const InvoiceShow = () => {
     window.confirm('Are you sure you want to finalize this invoice? This action cannot be undone') &&
     api.putInvoice({ id: invoice.id }, { invoice: { finalized: true } }).then(({ data }) => {
       setInvoice(data)
-      alert(`Invoice ${invoice?.id} finalized successfully!`)
     }).catch((error) => {
       window.alert("Error finalizing invoice\n" + error?.response?.data?.message)
     })
