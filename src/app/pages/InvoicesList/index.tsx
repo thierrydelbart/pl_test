@@ -34,6 +34,7 @@ const InvoicesList = (): React.ReactElement => {
   function setPaid(invoice_id: number, value: boolean): void {
     handleUpdate(invoice_id, { paid: value })
   }
+
   return (
     <div>
       <h1>Invoices</h1>
@@ -67,13 +68,15 @@ const InvoicesList = (): React.ReactElement => {
               <td>{invoice.deadline}</td>
               <td>
                 { !invoice.finalized  && (
-                    <button className="btn btn-outline-primary mx-2" onClick={() => finalize(invoice.id)}>
+                    <button className="btn btn-outline-success mx-2" onClick={() => finalize(invoice.id)}>
                       Finalize
                     </button>
                 )}
-                <button className="btn btn-outline-primary mx-2" onClick={() => setPaid(invoice.id,!invoice.paid)}>
-                  {invoice.paid ? 'Unset' : 'Set'} paid
-                </button>
+                { invoice.finalized  && (
+                  <button className="btn btn-outline-primary mx-2" onClick={() => setPaid(invoice.id,!invoice.paid)}>
+                    {invoice.paid ? 'Unset' : 'Set'} paid
+                  </button>
+                )}
               </td>
             </tr>
           ))}

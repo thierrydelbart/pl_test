@@ -6,9 +6,12 @@ import { Customer, Invoice } from 'types'
 import { useNavigate } from 'react-router-dom'
 import UpdateInvoiceForm from './updateInvoiceForm'
 import { Components } from 'api/gen/client'
-import Drawer from '../../components/drawer'
-import { Button, ButtonGroup, Card, Container, Nav, Navbar, Table } from 'react-bootstrap'
+import { Button, Card, Container, ListGroup, Nav, Navbar, Table } from 'react-bootstrap'
 import AddProductForm from './addProductForm'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
+import Drawer from 'app/components/drawer'
 
 interface InvoiceUpdateProps {
   customer?: Customer | null,
@@ -53,7 +56,6 @@ const InvoiceShow = () => {
     // console.log('Updating invoice...', invoiceUpdatePayload);
     api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(({ data }) => {
       setInvoice(data)
-      alert(`Invoice ${invoice?.id} saved successfully!`)
       setShowUpdate(false)
       setShowAddProduct(false)
     }).catch((error) => {
@@ -61,7 +63,7 @@ const InvoiceShow = () => {
     })
   }
 
-  const handleRemoveProduct = async (event: React.MouseEvent<HTMLButtonElement>, line_id: number) => {
+  const handleRemoveProduct = async (event: React.MouseEvent<HTMLAnchorElement>, line_id: number) => {
     event.preventDefault();
 
     if (!invoice) return;
@@ -84,9 +86,20 @@ const InvoiceShow = () => {
     })
   }
 
+  const setPaid = (invoice_id: number, value: boolean): void => {
+    handleUpdate(invoice_id, { paid: value })
+  }
+
+  const toMoney = (amount: number | string | null  ) => {
+    const value = (typeof amount === 'string') ? parseInt(amount) : amount
+    if (value === null || value === undefined) return "N/A"
+    else return value.toLocaleString("en-US", {style:"currency", currency:"USD"})
+  }
+
+  const subtotal = invoice?.total && invoice?.tax ? parseInt(invoice.total) - parseInt(invoice.tax) : null
+
   return (
     <div>
-      
       { invoice && (
         <>
           <Navbar collapseOnSelect expand="md" className="bg-body-tertiary mb-3">
@@ -99,13 +112,16 @@ const InvoiceShow = () => {
                 </Nav>
                 <Nav>
                   { !invoice?.finalized && (
-                    <ButtonGroup className="m-1">
-                      <Button variant="outline-primary" onClick={() => setShowUpdate(true)}>Edit</Button>
-                      <Button variant="outline-primary" onClick={() => setShowAddProduct(true)}>Add product</Button>
-                      <Button variant='outline-success' onClick={() => handleFinalize()}>Finalize</Button>
-                    </ButtonGroup>
+                    <>
+                      <Button className="m-1" variant='outline-success' onClick={() => handleFinalize()}>Finalize</Button>
+                      <Button className="m-1" variant='outline-danger' onClick={() => handleDelete()}>Delete</Button>
+                    </>
                   )}
-                  <Button className="m-1" variant='outline-danger' onClick={() => handleDelete()}>Delete</Button>
+                  { invoice?.finalized && (
+                    <Button className="m-1" variant='outline-primary' onClick={() => setPaid(invoice.id,!invoice.paid)}>
+                      {invoice.paid ? 'Unset' : 'Set'} paid
+                    </Button>
+                  )}
                 </Nav>
               </Navbar.Collapse>
             </Container>
@@ -117,46 +133,81 @@ const InvoiceShow = () => {
             </div>
           )}
           <div className="mb-3">
-            <Card className="m-auto" style={{ width: '18rem' }}>
+            { invoice?.paid && (
+              <img src="/pl_test/paid.png" style={{ position: 'absolute', zIndex: 1 }} />
+            )}
+            <Card className="mb-3" style={{ width: '20rem', float: 'right' }}>
               <Card.Body>
                 <Card.Title>{invoice.customer?.first_name} {invoice.customer?.last_name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
                   {invoice.customer?.address} {invoice.customer?.zip_code}<br />
                   {invoice.customer?.city} {invoice.customer?.country}
                 </Card.Subtitle>
-              </Card.Body>
-            </Card>
+                </Card.Body>
+                <ListGroup variant="flush">
+                    <ListGroup.Item><strong>Invoice Date:</strong> {invoice.date}</ListGroup.Item>
+                    <ListGroup.Item><strong>Due Date:</strong> {invoice.deadline}</ListGroup.Item>
+                  </ListGroup>
+                { !invoice?.finalized && (
+                  <Card.Footer>
+                    <Button variant="outline-primary" onClick={() => setShowUpdate(true)}>Edit</Button>
+                  </Card.Footer>
+                )}
+              </Card>
             <div className="mb-3">
               <Table striped bordered>
                 <thead>
                   <tr>
+                    <th></th>
                     <th>Product</th>
                     <th>Quantity</th>
-                    <th>Price</th>
-                    <th></th>
+                    <th>Unit Price</th>
+                    <th>VTA</th>
+                    <th>Total Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   { invoice.invoice_lines?.map((line, index) => (
                     <tr key={ line.id }>
+                      <td>
+                        { !invoice?.finalized && (
+                          <Link className="link-danger" onClick={(e) => handleRemoveProduct(e, line.id)} to={''}>
+                            <FontAwesomeIcon icon="trash" />
+                          </Link>
+                        )}
+                      </td>
                       <td>{ line.label }</td>
                       <td>{ line.quantity }</td>
-                      <td>{ line.price }</td>
-                      <td><button className="btn btn-outline-danger" onClick={(e) => handleRemoveProduct(e, line.id)}>Remove</button></td>
+                      <td>{ toMoney(parseInt(line.price) - parseInt(line.tax)) }</td>
+                      <td>{ line.vat_rate + "%" }</td>
+                      <td>{ toMoney(parseInt(line.price) * line.quantity) }</td>
                     </tr>
                   ))}
+                  { !invoice?.finalized && (
+                    <tr>
+                      <td colSpan={6} style={{ textAlign: "center" }}>
+                        <Button className="m-auto" variant="outline-primary" onClick={() => setShowAddProduct(true)}>Add product</Button>
+                      </td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td colSpan={4}></td>
+                    <td><strong>Subtotal:</strong></td>
+                    <td>{ toMoney(subtotal) }</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={4}></td>
+                    <td><strong>Tax:</strong></td>
+                    <td>{ toMoney(invoice?.tax) }</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={4}></td>
+                    <td><strong>Total:</strong></td>
+                    <td>{ toMoney(invoice?.total) }</td>
+                  </tr>
                 </tbody>
               </Table>
             </div>
-            <hr />
-            <div>
-              <strong>Total:</strong> {invoice.total}<br />
-              <strong>Finalized:</strong> {invoice.finalized ? 'Yes' : 'No'}<br />
-              <strong>Paid:</strong> {invoice.paid ? 'Yes' : 'No'}<br />
-              <strong>Date:</strong> {invoice.date}<br />
-              <strong>Deadline:</strong> {invoice.deadline}<br />
-            </div>
-            <hr />
           </div>
 
           { !invoice?.finalized && (

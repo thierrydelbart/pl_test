@@ -10,7 +10,7 @@ interface drawerProps {
 
 const Drawer = ({ title, show, handleClose, children }: drawerProps) => {
   return (
-    <Offcanvas show={show} onHide={handleClose}>
+    <Offcanvas show={show} onHide={handleClose} placement={'end'}>
       <Offcanvas.Header closeButton>
       <Offcanvas.Title>{ title }</Offcanvas.Title>
       </Offcanvas.Header>
