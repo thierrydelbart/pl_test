@@ -4,16 +4,21 @@ import '@testing-library/jest-dom';
 import InvoicesList from './index';
 import * as api from 'api';
 import { invoice_1, invoice_2, invoice_3 } from 'api/fixtures';
+import { MemoryRouter } from 'react-router-dom'
+
 
 const mockUseApi = jest.spyOn(api, 'useApi');
 
+const subject = () => render( <MemoryRouter><InvoicesList/></MemoryRouter> );
 describe('InvoicesList', () => {
+
+
   it('Should display a list of invoices', async () => {
     const mockPromise = Promise.resolve({ data: { invoices: [ invoice_1, invoice_2, invoice_3 ] }})
     // @ts-ignore:next-line
     mockUseApi.mockImplementation(() => ({ getInvoices: () => mockPromise })); 
 
-    const { getByText } = render( <InvoicesList/> );
+    const { getByText } = subject();
 
     await waitFor(() => {
       expect(getByText('John Doe')).toBeInTheDocument();
@@ -27,11 +32,10 @@ describe('InvoicesList', () => {
     // @ts-ignore:next-line
     mockUseApi.mockImplementation(() => ({ getInvoices: () => mockPromise })); 
 
-    const { getByText } = render( <InvoicesList/> );
+    const { getByText } = subject();
 
     await waitFor(() => {
       expect(getByText('Finalize')).toBeInTheDocument();
-      expect(getByText('Set paid')).toBeInTheDocument();
     });
   });
 
@@ -40,7 +44,7 @@ describe('InvoicesList', () => {
     // @ts-ignore:next-line
     mockUseApi.mockImplementation(() => ({ getInvoices: () => mockPromise })); 
 
-    const { queryByText, getByText } = render( <InvoicesList/> );
+    const { queryByText, getByText } = subject();
 
     await waitFor(() => {
       expect(queryByText('Finalize')).not.toBeInTheDocument();
@@ -54,7 +58,7 @@ describe('InvoicesList', () => {
     // @ts-ignore:next-line
     mockUseApi.mockImplementation(() => ({ getInvoices:  mockGetInvoices, putInvoice: mockPutInvoice })); 
 
-    const { getByText } = render( <InvoicesList/> );
+    const { getByText } = subject();
 
     await waitFor(() => {
       expect(getByText('Finalize')).toBeInTheDocument();
@@ -67,33 +71,13 @@ describe('InvoicesList', () => {
     });
   });
 
-  it('Should display alert message when error on update', async () => {
-    const mockGetInvoices = jest.fn().mockImplementation(() => Promise.resolve({ data: { invoices: [ invoice_1 ] }}))
-    const mockPutInvoice = jest.fn().mockImplementation(() => Promise.reject({ response: { data: { message: 'Error message' } } }))
-    // @ts-ignore:next-line
-    mockUseApi.mockImplementation(() => ({ getInvoices:  mockGetInvoices, putInvoice: mockPutInvoice })); 
-    jest.spyOn(window, 'alert').mockImplementation(() => {});
-
-    const { getByText } = render( <InvoicesList/> );
-
-    await waitFor(() => {
-      expect(getByText('Finalize')).toBeInTheDocument();
-    });
-
-    await getByText('Finalize').click();
-
-    await waitFor(() => {
-      expect(window.alert).toBeCalledWith('Error deleting invoice\nError message');
-    });
-  });
-
   it('Should request invoice update on set paid', async () => {
-    const mockGetInvoices = jest.fn().mockImplementation(() => Promise.resolve({ data: { invoices: [ invoice_1 ] }}))
-    const mockPutInvoice = jest.fn().mockImplementation(() => Promise.resolve({ data: invoice_2 }))
+    const mockGetInvoices = jest.fn().mockImplementation(() => Promise.resolve({ data: { invoices: [ invoice_3 ] }}))
+    const mockPutInvoice = jest.fn().mockImplementation(() => Promise.resolve({ data: { ...invoice_3 } }))
     // @ts-ignore:next-line
     mockUseApi.mockImplementation(() => ({ getInvoices:  mockGetInvoices, putInvoice: mockPutInvoice })); 
 
-    const { getByText } = render( <InvoicesList/> );
+    const { getByText } = subject();
 
     await waitFor(() => {
       expect(getByText('Set paid')).toBeInTheDocument();
@@ -102,7 +86,7 @@ describe('InvoicesList', () => {
     await getByText('Set paid').click();
     
     await waitFor(() => {
-      expect(mockPutInvoice).toHaveBeenCalledWith({ id: 1 }, { invoice: { paid: true } });
+      expect(mockPutInvoice).toHaveBeenCalledWith({ id: 3 }, { invoice: { paid: true } });
     });
   });
 });

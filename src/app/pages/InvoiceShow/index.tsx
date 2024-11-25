@@ -13,13 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import Drawer from 'app/components/drawer'
 
-interface InvoiceUpdateProps {
-  customer?: Customer | null,
-  date?: Date | null,
-  deadline?: Date | null,
-  invoice_lines?: Components.Schemas.InvoiceLineUpdatePayload[],
-}
-
 const InvoiceShow = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate();
@@ -28,12 +21,6 @@ const InvoiceShow = () => {
   const [invoice, setInvoice] = useState<Invoice>()
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [ formData, setFormData ] = useState<InvoiceUpdateProps>({
-    customer: invoice?.customer || null,
-    date: invoice?.date ? new Date(invoice.date) : new Date(),
-    deadline: invoice?.deadline ? new Date(invoice.deadline) : new Date(),
-    invoice_lines: invoice?.invoice_lines || [],
-  })
 
   useEffect(() => {
     api.getInvoice(id).then(({ data }) => {
@@ -134,7 +121,7 @@ const InvoiceShow = () => {
           )}
           <div className="mb-3">
             { invoice?.paid && (
-              <img src="/pl_test/paid.png" style={{ position: 'absolute', zIndex: 1 }} />
+              <img src="/pl_test/paid.png" alt="Invoice paid" style={{ position: 'absolute', zIndex: 1 }} />
             )}
             <Card className="mb-3" style={{ width: '20rem', float: 'right' }}>
               <Card.Body>
