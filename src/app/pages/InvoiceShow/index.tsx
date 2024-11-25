@@ -128,17 +128,17 @@ const InvoiceShow = () => {
                   {invoice.customer?.address} {invoice.customer?.zip_code}<br />
                   {invoice.customer?.city} {invoice.customer?.country}
                 </Card.Subtitle>
-                </Card.Body>
-                <ListGroup variant="flush">
-                    <ListGroup.Item><strong>Invoice Date:</strong> {invoice.date}</ListGroup.Item>
-                    <ListGroup.Item><strong>Due Date:</strong> {invoice.deadline}</ListGroup.Item>
-                  </ListGroup>
-                { !invoice?.finalized && (
-                  <Card.Footer>
-                    <Button variant="outline-primary" onClick={() => setShowUpdate(true)}>Edit</Button>
-                  </Card.Footer>
-                )}
-              </Card>
+              </Card.Body>
+              <ListGroup variant="flush">
+                  <ListGroup.Item><strong>Invoice Date:</strong> {invoice.date}</ListGroup.Item>
+                  <ListGroup.Item><strong>Due Date:</strong> {invoice.deadline}</ListGroup.Item>
+                </ListGroup>
+              { !invoice?.finalized && (
+                <Card.Footer>
+                  <Button variant="outline-primary" onClick={() => setShowUpdate(true)}>Edit</Button>
+                </Card.Footer>
+              )}
+            </Card>
             <div className="mb-3">
               <Table striped bordered>
                 <thead>
