@@ -57,7 +57,6 @@ const InvoiceCreate = () => {
     };
 
     api.postInvoices(null, { invoice: invoiceCreatePayload }).then(({ data }) => {
-      window.alert(`Invoice ${data.id} created successfully!`);
       navigate('/invoice/' + data.id)
     }).catch((error) => {
       window.alert("Error creating invoice\n" + error?.response?.data?.message)
