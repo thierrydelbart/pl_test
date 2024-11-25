@@ -52,27 +52,19 @@ const InvoiceShow = () => {
   const handleRemoveProduct = async (event: React.MouseEvent<HTMLAnchorElement>, line_id: number) => {
     event.preventDefault();
 
-    if (!invoice) return;
-
-    handleUpdate(invoice?.id, {
-      invoice_lines_attributes: [
-        { id: line_id, _destroy: true },
-      ]
-    });
+    invoice &&
+    handleUpdate(invoice?.id, { invoice_lines_attributes: [ { id: line_id, _destroy: true } ] });
   }
 
   const handleFinalize = async () => {
     invoice &&
     window.confirm('Are you sure you want to finalize this invoice? This action cannot be undone') &&
-    api.putInvoice({ id: invoice.id }, { invoice: { finalized: true } }).then(({ data }) => {
-      setInvoice(data)
-    }).catch((error) => {
-      window.alert("Error finalizing invoice\n" + error?.response?.data?.message)
-    })
+    handleUpdate(invoice.id, { finalized: true })
   }
 
-  const setPaid = (invoice_id: number, value: boolean): void => {
-    handleUpdate(invoice_id, { paid: value })
+  const togglePaid = async () => {
+    invoice &&
+    handleUpdate(invoice.id, { paid: !invoice.paid })
   }
 
   const toMoney = (amount: number | string | null  ) => {
@@ -103,7 +95,7 @@ const InvoiceShow = () => {
                     </>
                   )}
                   { invoice?.finalized && (
-                    <Button className="m-1" variant='outline-primary' onClick={() => setPaid(invoice.id,!invoice.paid)}>
+                    <Button className="m-1" variant='outline-primary' onClick={() => togglePaid()}>
                       {invoice.paid ? 'Unset' : 'Set'} paid
                     </Button>
                   )}

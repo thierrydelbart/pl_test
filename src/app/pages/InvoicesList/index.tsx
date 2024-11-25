@@ -20,7 +20,7 @@ const InvoicesList = (): React.ReactElement => {
 
   const handleUpdate = async (invoice_id: number, invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload) => {
 //    console.log('Updating invoice...', invoiceUpdatePayload);
-    api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(({ data }) => {
+    api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(() => {
       fetchInvoices()
     }).catch((error) => {
       window.alert("Error updating invoice\n" + error?.response?.data?.message)
