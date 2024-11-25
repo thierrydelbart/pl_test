@@ -4,26 +4,22 @@ import DatePicker from "react-datepicker";
 import CustomerAutocomplete from '../../components/CustomerAutocomplete'
 
 import { Customer, Invoice } from "types";
-import { Table } from "react-bootstrap";
-
 interface Props {
-  invoice: Invoice | null,
-  onUpdate: (invoice_id: number, invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload) => void
+  invoice: Invoice,
+  onSubmit: (invoice_id: number, invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload) => void
 }
 
 interface InvoiceUpdateProps {
   customer?: Customer | null,
   date?: Date | null,
   deadline?: Date | null,
-  invoice_lines?: Components.Schemas.InvoiceLineUpdatePayload[],
 }
 
-const UpdateInvoiceForm = ({ invoice, onUpdate }: Props) => {
+const UpdateInvoiceForm = ({ invoice, onSubmit }: Props) => {
   const [ formData, setFormData ] = useState<InvoiceUpdateProps>({
     customer: invoice?.customer || null,
     date: invoice?.date ? new Date(invoice.date) : new Date(),
     deadline: invoice?.deadline ? new Date(invoice.deadline) : new Date(),
-    invoice_lines: invoice?.invoice_lines || [],
   })
 
   const validateFormData = (data: InvoiceUpdateProps) => {
@@ -49,39 +45,20 @@ const UpdateInvoiceForm = ({ invoice, onUpdate }: Props) => {
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) =>{
     event.preventDefault();
 
-    if (!invoice) return;
-
     if (!validateFormData(formData)) return;
 
     const customer_id = formData?.customer?.id;
     if (!customer_id) return;
 
-    const invoiceCreatePayload: Components.Schemas.InvoiceUpdatePayload = {
+    const invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload = {
       customer_id: customer_id,
       date: formData.date?.toISOString(),
       deadline: formData.deadline?.toISOString(),
     };
 
-    await onUpdate(invoice.id, invoiceCreatePayload);
+    await onSubmit(invoice.id, invoiceUpdatePayload);
   };
 
-  const handleAddProduct = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    console.log('Adding product...');
-    formData.invoice_lines?.push({
-      product_id: formData.invoice_lines.length + 1,
-      quantity: 1,
-      label: 'Product 123',
-      unit: "piece",
-      price: 15.50,
-    });
-    console.log(formData.invoice_lines);
-  }
-
-  const handleRemoveProduct = async (event: React.MouseEvent<HTMLButtonElement>, index: number) => {
-    event.preventDefault();
-    console.log('Removing product...');
-  }
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -111,33 +88,6 @@ const UpdateInvoiceForm = ({ invoice, onUpdate }: Props) => {
                 selected={formData?.deadline}
                 onChange={(date) => setFormData({ ...formData, deadline: date})}
               />
-            </div>
-            <div className="mb-3">
-              <h2><small>Products</small></h2>
-              <div className="mb-3">
-                <button className="btn btn-outline-primary" onClick={handleAddProduct}>Add product</button>
-                <br/><br/>
-                <Table striped bordered>
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Quantity</th>
-                      <th>Price</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    { formData.invoice_lines?.map((line, index) => (
-                      <tr key={ line.product_id }>
-                        <td>{ line.label }</td>
-                        <td>{ line.quantity }</td>
-                        <td>{ line.price }</td>
-                        <td><button className="btn btn-outline-danger" onClick={(e) => handleRemoveProduct(e, index)}>Remove</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
             </div>
           </div>
         )}
