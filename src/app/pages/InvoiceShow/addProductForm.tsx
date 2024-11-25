@@ -40,16 +40,26 @@ const AddProductForm = ({ invoice, onSubmit }: Props) => {
     const product_id = formData?.product?.id;
     if (!product_id) return;
 
-    const invoiceLineUpdatePayload: Components.Schemas.InvoiceLineUpdatePayload = {
-      product_id: product_id,
-      quantity: formData?.quantity || 1,
-      label: formData?.product?.label + ' (promo)' || '',
-      unit: formData?.product?.unit || undefined,
-      vat_rate: formData?.product?.vat_rate || undefined,
-      price: formData?.product?.unit_price || 0,
-      tax: formData?.product?.unit_tax || 0,
-    };
+    const index = invoice.invoice_lines?.findIndex((line) => line.product_id === product_id);
 
+    let invoiceLineUpdatePayload;
+    if (index !== -1) { // product already in invoice
+      const line = invoice.invoice_lines[index];
+      invoiceLineUpdatePayload = {
+        id: line.id,
+        quantity: line.quantity + (formData?.quantity || 1),
+      };
+    } else { // new product
+      invoiceLineUpdatePayload = {
+        product_id: product_id,
+        quantity: formData?.quantity || 1,
+        label: formData?.product?.label || '',
+        unit: formData?.product?.unit || undefined,
+        vat_rate: formData?.product?.vat_rate || undefined,
+        price: formData?.product?.unit_price || 0,
+        tax: formData?.product?.unit_tax || 0,
+      };
+    }
     const invoiceUpdatePayload: Components.Schemas.InvoiceUpdatePayload = {
       invoice_lines_attributes: [invoiceLineUpdatePayload],
     };

@@ -64,9 +64,13 @@ const InvoiceShow = () => {
   const handleRemoveProduct = async (event: React.MouseEvent<HTMLButtonElement>, line_id: number) => {
     event.preventDefault();
 
-    const index = invoice?.invoice_lines?.findIndex((line) => line.id === line_id);
+    if (!invoice) return;
 
-    console.log('Removing product...', index);
+    handleUpdate(invoice?.id, {
+      invoice_lines_attributes: [
+        { id: line_id, _destroy: true },
+      ]
+    });
   }
 
   const handleFinalize = async () => {
