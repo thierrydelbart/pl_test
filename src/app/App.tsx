@@ -1,11 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import InvoicesList from './components/InvoicesList'
-import InvoiceShow from './components/InvoiceShow'
-import InvoiceCreate from './components/InvoiceCreate'
+import InvoicesList from './pages/InvoicesList'
+import InvoiceShow from './pages/InvoiceShow'
+import InvoiceCreate from './pages/InvoiceCreate'
 
 function App() {
-  console.log(process.env.BASENAME)
   return (
     <div className="px-5">
       <Router basename="pl_test">

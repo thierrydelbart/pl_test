@@ -3,7 +3,7 @@ import { useApi } from 'api'
 import { Customer } from 'types'
 import { Components } from 'api/gen/client'
 import DatePicker from "react-datepicker";
-import CustomerAutocomplete from '../CustomerAutocomplete'
+import CustomerAutocomplete from '../../components/CustomerAutocomplete'
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useNavigate } from 'react-router-dom';
@@ -70,7 +70,7 @@ const InvoiceCreate = () => {
       <Link className="btn btn-outline-dark mb-3" to="/">Back</Link>
       <form onSubmit={handleCreate}>
         <div className="mb-3">
-          <label className="form-label">Customer</label>
+          <label className="form-label">First, select invoice customer</label>
           <CustomerAutocomplete 
             value={formData?.customer || null} 
             onChange={(customer) => setFormData({ ...formData, customer: customer})} 

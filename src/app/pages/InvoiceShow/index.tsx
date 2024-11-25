@@ -6,8 +6,12 @@ import { Invoice } from 'types'
 import { Link, useNavigate } from 'react-router-dom'
 import UpdateInvoiceForm from './updateInvoiceForm'
 import { Components } from 'api/gen/client'
+import Drawer from './drawer'
+import { Button } from 'react-bootstrap'
 
 const InvoiceShow = () => {
+  const [showUpdate, setShowUpdate] = useState(false);
+
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate();
 
@@ -36,6 +40,7 @@ const InvoiceShow = () => {
     api.putInvoice({ id: invoice_id }, { invoice: invoiceUpdatePayload }).then(({ data }) => {
       setInvoice(data)
       alert(`Invoice ${invoice?.id} saved successfully!`)
+      setShowUpdate(false)
     }).catch((error) => {
       window.alert("Error updating invoice\n" + error?.response?.data?.message)
     })
@@ -58,11 +63,29 @@ const InvoiceShow = () => {
       <Link className="btn btn-outline-dark mb-3" to="/">Back</Link>
       { invoice && (
         <>
-          <UpdateInvoiceForm invoice={ invoice } onUpdate={handleUpdate}/>
+          <div>
+            <Button variant="primary" onClick={() => setShowUpdate(true)}>
+              Edit
+            </Button>
+          </div>
+          { invoice?.finalized && (
+            <div className="alert alert-warning" role="alert">
+              This invoice is finalized
+            </div>
+          )}
+          { !invoice?.finalized && (
+            <Drawer title={`Update invoice ${invoice?.id}`} show={showUpdate} handleClose={() => setShowUpdate(false)}>
+              <UpdateInvoiceForm invoice={ invoice } onUpdate={handleUpdate}/>
+            </Drawer>
+          )}
           <hr/>
           <h2><small>Advanced actions</small></h2>
-          <button className='btn btn-outline-success' onClick={() => handleFinalize()}>Finalize</button>
-          &nbsp;&nbsp;&nbsp;
+          { !invoice?.finalized && (
+            <>
+              <button className='btn btn-outline-success' onClick={() => handleFinalize()}>Finalize</button>
+              &nbsp;&nbsp;&nbsp;
+            </>
+          )}
           <button className='btn btn-outline-danger' onClick={() => handleDelete()}>Delete</button>
           <hr/>
           <h2><small>More</small></h2>
